@@ -18,10 +18,18 @@ class TeamLeaderAgent(Agent):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.team_members = {}
-        self.knowledge_graph = KnowledgeGraph()
+        self._team_members = {}
+        self._knowledge_graph = KnowledgeGraph()
         self._memory = Memory()  # Initialize Memory properly
-        self.task_history = []
+        self._task_history = []
+        
+    @property
+    def team_members(self):
+        return self._team_members
+        
+    @property
+    def task_history(self):
+        return self._task_history
 
     def add_team_member(self, role: str, agent: Agent):
         """Add a team member"""
@@ -86,7 +94,7 @@ class TeamLeaderAgent(Agent):
         self._memory.store(f"task_{task_id}", results)
 
         # Store in task history
-        self.task_history.append({
+        self._task_history.append({
             "task_id": task_id,
             "timestamp": datetime.now().isoformat(),
             "results": results

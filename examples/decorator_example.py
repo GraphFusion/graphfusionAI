@@ -6,14 +6,8 @@ import asyncio
 from mas_framework import Agent, Role
 from datetime import datetime
 
-@Agent.create("DataProcessor", 
-    role=Role(
-        name="data_processor",
-        capabilities=["process_data", "analyze_data"],
-        description="Agent for processing and analyzing data"
-    )
-)
 class DataProcessorAgent(Agent):
+    """Agent for processing and analyzing data"""
     """Agent for processing and analyzing data"""
 
     def __init__(self, **kwargs):
@@ -51,8 +45,13 @@ class DataProcessorAgent(Agent):
         return {"error": "Unsupported task type"}
 
 async def main():
-    # Create agent instance
-    agent = DataProcessorAgent()
+    # Create agent instance with role
+    role = Role(
+        name="data_processor",
+        capabilities=["process_data", "analyze_data"],
+        description="Agent for processing and analyzing data"
+    )
+    agent = DataProcessorAgent(name="DataProcessor", role=role)
 
     # Create and execute task
     task = {
