@@ -1,23 +1,23 @@
+
 """
 Example demonstrating AIML-powered agent capabilities
 """
 
 import asyncio
-import os
 from mas_framework import Agent, Role
 from mas_framework.llm import AIMLProvider, PromptTemplate
 
-@Agent.create("TravelAgent",
-    role=Role(
-        name="travel_agent",
-        capabilities=["plan_trip", "recommend_places"],
-        description="Agent that helps plan trips and recommends places"
-    )
-)
 class TravelAgent(Agent):
     """Agent for travel planning and recommendations"""
 
     def __init__(self, **kwargs):
+        role = Role(
+            name="travel_agent",
+            capabilities=["plan_trip", "recommend_places"],
+            description="Agent that helps plan trips and recommends places"
+        )
+        kwargs['name'] = "TravelAgent"
+        kwargs['role'] = role
         super().__init__(**kwargs)
         
         # Set up AIML provider
