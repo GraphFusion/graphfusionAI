@@ -1,0 +1,159 @@
+modules = ["python-3.11"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "MAS Framework Demo"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Agent Examples"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "AIML Agent Example"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Advanced Orchestration Example"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Enhanced Memory Example"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Tool Framework Example"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Advanced Knowledge Graph Demo"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Team Collaboration Example"
+
+[[workflows.workflow]]
+name = "MAS Framework Demo"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python examples/simple_workflow.py"
+
+[[workflows.workflow]]
+name = "Agent Examples"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python examples/agent_examples.py"
+
+[[workflows.workflow]]
+name = "AIML Agent Example"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python examples/aiml_agent_example.py"
+
+[[workflows.workflow]]
+name = "Advanced Orchestration Example"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python examples/advanced_orchestration_example.py"
+
+[[workflows.workflow]]
+name = "Enhanced Memory Example"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python examples/enhanced_memory_example.py"
+
+[[workflows.workflow]]
+name = "Tool Framework Example"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python examples/tool_framework_example.py"
+
+[[workflows.workflow]]
+name = "Advanced Knowledge Graph Demo"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python examples/advanced_knowledge_graph_example.py"
+
+[[workflows.workflow]]
+name = "Team Collaboration Example"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python examples/team_collaboration_example.py"
+
+[deployment]
+run = ["sh", "-c", "python examples/simple_workflow.py"]

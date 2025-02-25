@@ -1,0 +1,24 @@
+# Git Setup and GitHub Push Commands
+
+# Initialize a new git repository
+git init
+
+# Configure your Git username and email (replace with your actual information)
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+
+# Stage all project files
+git add .
+
+# Commit your changes
+git commit -m "Initial commit of mas-framework"
+
+# Create a new repository on GitHub via the GitHub website
+# Then copy its URL and replace in the command below
+# Format: https://github.com/username/repository.git
+
+# Link your local repository to the GitHub remote repository
+git remote add origin https://github.com/username/repository.git
+
+# Push your commit to GitHub on the main branch
+git push -u origin main
