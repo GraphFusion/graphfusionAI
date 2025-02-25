@@ -24,9 +24,12 @@ class MathTool(Tool):
                 version="1.0.0",
                 tags=["math", "utility"],
                 input_schema={
-                    "x": "float",
-                    "y": "float",
-                    "operation": "str"
+                    "x": ["float", "int"],
+                    "y": ["float", "int"],
+                    "operation": {
+                        "type": "str",
+                        "enum": ["add", "subtract", "multiply", "divide"]
+                    }
                 },
                 output_schema={"type": "float"}
             ),
