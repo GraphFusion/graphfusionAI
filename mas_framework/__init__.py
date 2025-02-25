@@ -2,10 +2,10 @@
 LLM integration module for MAS Framework
 """
 
-from .base import LLMProvider
-from .providers.custom_aiml import AIMLProvider
-from .prompt_manager import PromptManager, PromptTemplate
-from .conversation import ConversationManager, Message
+from llm.base import LLMProvider
+from llm.providers.custom_aiml import AIMLProvider
+from llm.prompt_manager import PromptManager, PromptTemplate
+from llm.conversation import ConversationManager, Message
 
 __all__ = [
     "LLMProvider",
