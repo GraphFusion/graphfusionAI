@@ -24,8 +24,8 @@ class MathTool(Tool):
                 version="1.0.0",
                 tags=["math", "utility"],
                 input_schema={
-                    "x": ["float", "int"],
-                    "y": ["float", "int"],
+                    "x": {"type": "float"},
+                    "y": {"type": "float"},
                     "operation": {
                         "type": "str",
                         "enum": ["add", "subtract", "multiply", "divide"]
@@ -38,6 +38,7 @@ class MathTool(Tool):
 
     def calculate(self, x: float, y: float, operation: str) -> float:
         """Perform math calculation"""
+        x, y = float(x), float(y)
         if operation == "add":
             return x + y
         elif operation == "subtract":
