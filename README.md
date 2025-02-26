@@ -19,7 +19,7 @@
 
 ⚠️ **This project is in early development!** Expect bugs, incomplete features, and potential breaking changes. If you're contributing, **please read the codebase carefully** and help us improve it. 
 
-A Python framework for building multi-agent systems where multiple AI agents collaborate to complete tasks. The framework provides a structured way to define, manage, and coordinate multiple agents, each with specific roles, abilities, and goals.
+GraphFusionAI is a Python framework for building multi-agent systems where AI agents collaborate to complete tasks. The framework provides a structured way to define, manage, and coordinate multiple agents, each with specific roles, abilities, and goals.
 
 ## Key Features
 
