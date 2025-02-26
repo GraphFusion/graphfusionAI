@@ -1,6 +1,6 @@
 # Building Agents with GraphFusionAI Framework
 
-This guide walks you through the process of creating custom agents using the MAS Framework. We'll cover everything from basic agent creation to advanced features like knowledge graph integration and inter-agent communication.
+This guide walks you through the process of creating custom agents using the GraphFusionAI Framework. We'll cover everything from basic agent creation to advanced features like knowledge graph integration and inter-agent communication.
 
 ## Basic Agent Creation
 
@@ -9,7 +9,7 @@ This guide walks you through the process of creating custom agents using the MAS
 First, define your agent's role and capabilities:
 
 ```python
-from mas_framework import Role, Agent
+from graphfusionai import Role, Agent
 
 custom_role = Role(
     name="data_processor",
@@ -60,7 +60,7 @@ agent.remember("analysis_results", results)
 Integrate your agent with the Knowledge Graph:
 
 ```python
-from mas_framework import KnowledgeGraph, Node, Edge
+from graphfusionai import KnowledgeGraph, Node, Edge
 
 class KnowledgeAwareAgent(Agent):
     def __init__(self, **data):
@@ -104,7 +104,7 @@ class KnowledgeAwareAgent(Agent):
 Enable communication between agents:
 
 ```python
-from mas_framework import CommunicationBus, Message
+from graphfusionai import CommunicationBus, Message
 
 async def handle_message(message: Message):
     print(f"Received message: {message.content}")
@@ -129,7 +129,7 @@ await comm_bus.send_message(message)
 Here's a complete example of a sophisticated agent that uses multiple framework features:
 
 ```python
-from mas_framework import (
+from graphfusionai import (
     Agent, Role, KnowledgeGraph, Message,
     Node, Edge, Memory
 )
@@ -282,7 +282,7 @@ Here's how to test your custom agents:
 
 ```python
 import pytest
-from mas_framework import TaskOrchestrator
+from graphfusionai import TaskOrchestrator
 
 @pytest.mark.asyncio
 async def test_analytics_agent():
