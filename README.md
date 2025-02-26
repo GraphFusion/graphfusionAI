@@ -12,7 +12,7 @@
 
 </div>
 <h3 align="center">
-   <a href="https://github.com/GraphFusion/graphfusion/blob/main/documentation.md"><b>Docs</b></a> &bull;
+   <a href="https://github.com/GraphFusion/graphfusionAI/tree/main/docs"><b>Docs</b></a> &bull;
    <a href="https://graphfusion.github.io/graphfusion.io/"><b>Website</b></a>
 </h3>
 <br />
