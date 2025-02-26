@@ -3,7 +3,7 @@
 ## Multi-Agent Systems Architecture
 
 ### Overview
-The MAS Framework is built on the principle that complex problems can be solved more effectively through the collaboration of multiple specialized agents. Each agent brings unique capabilities and can work together through a structured communication system.
+The GraphFusionAI Framework is built on the principle that complex problems can be solved more effectively through the collaboration of multiple specialized agents. Each agent brings unique capabilities and can work together through a structured communication system.
 
 ### Knowledge Graph Integration
 As highlighted in our framework's philosophy:
