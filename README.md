@@ -110,6 +110,6 @@ GraphFusionAI includes several example workflows demonstrating different feature
 - [Core Concepts](https://github.com/GraphFusion/graphfusionAI/blob/main/docs/core_concepts.md): Framework architecture and components
 - [API Reference](https://github.com/GraphFusion/graphfusionAI/blob/main/docs/api_reference.md): Detailed API documentation
 - [Advanced Examples](https://github.com/GraphFusion/graphfusionAI/blob/main/docs/advanced_examples.md): Complex usage patterns
-- [Agent Development Guide](agent_development_guide.md): Creating custom agents
-- [Dependencies](dependencies.md): Framework requirements and versions
+- [Agent Development Guide](https://github.com/GraphFusion/graphfusionAI/blob/main/docs/agent_development_guide.md): Creating custom agents
+- [Dependencies](https://github.com/GraphFusion/graphfusionAI/blob/main/docs/dependencies.md): Framework requirements and versions
 
