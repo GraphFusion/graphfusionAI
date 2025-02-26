@@ -35,7 +35,7 @@ A Python framework for building multi-agent systems where multiple AI agents col
 ## Installation
 
 ```bash
-pip install mas-framework
+pip install graphfusionai
 ```
 
 ## Quick Start
