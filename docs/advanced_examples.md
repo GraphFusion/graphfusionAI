@@ -6,7 +6,7 @@ This example demonstrates multiple agents working together to research, analyze,
 
 ```python
 import asyncio
-from mas_framework import (
+from graphfusionai import (
     Agent, Role, KnowledgeGraph, TaskOrchestrator,
     Message, CommunicationBus, Memory, Ontology
 )
@@ -162,7 +162,7 @@ if __name__ == "__main__":
 This example shows how agents can use the knowledge graph to share and build upon each other's knowledge.
 
 ```python
-from mas_framework import KnowledgeGraph, Node, Edge, Agent, Role
+from graphfusionai import KnowledgeGraph, Node, Edge, Agent, Role
 
 # Define knowledge-aware agent
 class KnowledgeAwareAgent(Agent):
@@ -238,7 +238,7 @@ async def knowledge_collaboration_example():
 Example demonstrating sophisticated memory management with context awareness.
 
 ```python
-from mas_framework import Memory, KnowledgeGraph, Node, Edge
+from graphfusionai import Memory, KnowledgeGraph, Node, Edge
 
 class ContextAwareMemory(Memory):
     def __init__(self):
