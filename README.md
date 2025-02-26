@@ -5,7 +5,7 @@
 <div align="center">
 
   [![GitHub release](https://img.shields.io/badge/Github-Release-blue)](https://github.com/GraphFusion/GraphFusion-NMN/releases)
-  [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/GraphFusion/GraphFusion/blob/main/LICENSE)
+  [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/GraphFusion/graphfusionAI/blob/main/LICENSE)
   [![Join us on Teams](https://img.shields.io/badge/Join-Teams-blue)](https://teams.microsoft.com/)
   [![Discord Server](https://img.shields.io/badge/Discord-Server-blue)](https://discord.gg/zK94WvRjZT)
 
