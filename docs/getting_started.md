@@ -1,7 +1,7 @@
-# Getting Started with MAS Framework
+# Getting Started with GraphFusionAI Framework
 
 ## Introduction
-The MAS Framework is a Python library for building multi-agent systems with Knowledge Graph integration. It provides a structured way to define, manage, and coordinate multiple AI agents, each with specific roles, abilities, and goals.
+The GraphFusionAI Framework is a Python library for building multi-agent systems with Knowledge Graph integration. It provides a structured way to define, manage, and coordinate multiple AI agents, each with specific roles, abilities, and goals.
 
 ## Key Features
 - Multi-agent coordination and communication
@@ -12,14 +12,14 @@ The MAS Framework is a Python library for building multi-agent systems with Know
 
 ## Installation
 ```bash
-pip install mas-framework
+pip install graphfusionai
 ```
 
 ## Quick Start
 Here's a simple example of creating and running a multi-agent system:
 
 ```python
-from mas_framework import Agent, Role, TaskOrchestrator, KnowledgeGraph, Memory
+from graphfusionai import Agent, Role, TaskOrchestrator, KnowledgeGraph, Memory
 
 # Define agent roles
 research_role = Role(
