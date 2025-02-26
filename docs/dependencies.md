@@ -2,7 +2,7 @@
 
 ## Core Dependencies
 
-The following Python packages are required for the MAS Framework:
+The following Python packages are required for the graphfusionAI Framework:
 
 ### Required Packages
 - **networkx** (>=2.5)
