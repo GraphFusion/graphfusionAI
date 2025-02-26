@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="graphfusionai",
-    version="0.1.0",
+    version="0.1.0-alpha",
     description="A Python framework for building multi-agent systems with Knowledge Graph integration",
     python_requires=">=3.11",
     packages=find_packages(),
@@ -21,9 +21,13 @@ setup(
         "transformers>=4.49.0",
     ],
     classifiers=[
+        "Development Status :: 3 - Alpha",  # Explicitly marks it as an early-stage release
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+        "Intended Audience :: Developers",
+        "Topic :: Software Development :: Libraries :: Application Frameworks",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
     include_package_data=True,
 )
