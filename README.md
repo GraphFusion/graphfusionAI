@@ -1,7 +1,25 @@
    
-# Multi-Agent System Framework with Knowledge Graph Integration
+![graph-fusion-logo](https://github.com/user-attachments/assets/de5a4a09-a7e4-4b21-b3ec-01d5a3097ecd)
 
-A Python framework for building multi-agent systems where multiple AI agents collaborate to complete tasks. The framework provides a structured way to define, manage, and coordinate multiple agents, each with specific roles, abilities, and goals.
+</p> 
+<h1 align="center" weight='300'>GraphFusionAI: The Graph-Based AI Agent Framework</h1>
+<div align="center">
+
+  [![GitHub release](https://img.shields.io/badge/Github-Release-blue)](https://github.com/GraphFusion/GraphFusion-NMN/releases)
+  [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/GraphFusion/graphfusionAI/blob/main/LICENSE)
+  [![Join us on Teams](https://img.shields.io/badge/Join-Teams-blue)](https://teams.microsoft.com/)
+  [![Discord Server](https://img.shields.io/badge/Discord-Server-blue)](https://discord.gg/zK94WvRjZT)
+
+</div>
+<h3 align="center">
+   <a href="https://github.com/GraphFusion/graphfusionAI/tree/main/docs"><b>Docs</b></a> &bull;
+   <a href="https://graphfusion.github.io/graphfusion.io/"><b>Website</b></a>
+</h3>
+<br />
+
+⚠️ **This project is in early development!** Expect bugs, incomplete features, and potential breaking changes. If you're contributing, **please read the codebase carefully** and help us improve it. 
+
+GraphFusionAI is a Python framework for building multi-agent systems where AI agents collaborate to complete tasks. The framework provides a structured way to define, manage, and coordinate multiple agents, each with specific roles, abilities, and goals.
 
 ## Key Features
 
@@ -17,7 +35,7 @@ A Python framework for building multi-agent systems where multiple AI agents col
 ## Installation
 
 ```bash
-pip install mas-framework
+pip install graphfusionai
 ```
 
 ## Quick Start
