@@ -1,6 +1,6 @@
-# Multi-Agent System Framework with Knowledge Graph Integration
+# GraphFusionAI: Multi-Agent System Framework with Knowledge Graph Integration
 
-A Python framework for building multi-agent systems where multiple AI agents collaborate to complete tasks. The framework provides a structured way to define, manage, and coordinate multiple agents, each with specific roles, abilities, and goals.
+GraphFusionAI is a Python framework for building multi-agent systems where multiple AI agents collaborate to complete tasks. The framework provides a structured way to define, manage, and coordinate multiple agents, each with specific roles, abilities, and goals.
 
 ## Key Features
 
@@ -14,7 +14,7 @@ A Python framework for building multi-agent systems where multiple AI agents col
 ## Installation
 
 ```bash
-pip install mas-framework
+pip install graphfusionai
 ```
 
 ## Quick Start
@@ -22,7 +22,7 @@ pip install mas-framework
 Here's a simple example of creating a multi-agent system:
 
 ```python
-from mas_framework import Agent, Role, KnowledgeGraph, TaskOrchestrator
+from graphfusionai import Agent, Role, KnowledgeGraph, TaskOrchestrator
 
 # Define roles
 researcher_role = Role(
