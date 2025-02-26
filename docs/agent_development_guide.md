@@ -1,4 +1,4 @@
-# Building Agents with MAS Framework
+# Building Agents with GraphFusionAI Framework
 
 This guide walks you through the process of creating custom agents using the MAS Framework. We'll cover everything from basic agent creation to advanced features like knowledge graph integration and inter-agent communication.
 
