@@ -1,23 +1,22 @@
-   
 ![graph-fusion-logo](https://github.com/user-attachments/assets/de5a4a09-a7e4-4b21-b3ec-01d5a3097ecd)
 
-</p> 
+</p>
 <h1 align="center" weight='300'>GraphFusionAI: The Graph-Based AI Agent Framework</h1>
 <div align="center">
 
   [![GitHub release](https://img.shields.io/badge/Github-Release-blue)](https://github.com/GraphFusion/GraphFusion-NMN/releases)
-  [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/GraphFusion/graphfusionAI/blob/main/LICENSE)
+  [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/GraphFusion/GraphFusion/blob/main/LICENSE)
   [![Join us on Teams](https://img.shields.io/badge/Join-Teams-blue)](https://teams.microsoft.com/)
   [![Discord Server](https://img.shields.io/badge/Discord-Server-blue)](https://discord.gg/zK94WvRjZT)
 
 </div>
 <h3 align="center">
-   <a href="https://github.com/GraphFusion/graphfusionAI/tree/main/docs"><b>Docs</b></a> &bull;
+   <a href="https://github.com/GraphFusion/graphfusion/blob/main/documentation.md"><b>Docs</b></a> &bull;
    <a href="https://graphfusion.github.io/graphfusion.io/"><b>Website</b></a>
 </h3>
 <br />
 
-⚠️ **This project is in early development!** Expect bugs, incomplete features, and potential breaking changes. If you're contributing, **please read the codebase carefully** and help us improve it. 
+⚠️ **This project is in early development!** Expect bugs, incomplete features, and potential breaking changes. If you're contributing, **please read the codebase carefully** and help us improve it.
 
 GraphFusionAI is a Python framework for building multi-agent systems where AI agents collaborate to complete tasks. The framework provides a structured way to define, manage, and coordinate multiple agents, each with specific roles, abilities, and goals.
 
@@ -43,7 +42,7 @@ pip install graphfusionai
 Here's a simple example of creating a multi-agent system:
 
 ```python
-from mas_framework import Agent, Role, Tool, KnowledgeGraph, TaskOrchestrator
+from graphfusionai import Agent, Role, Tool, KnowledgeGraph, TaskOrchestrator
 
 # Define a tool
 @Tool.create(
@@ -94,7 +93,7 @@ result = await orchestrator.execute_task(researcher, task)
 
 ## Example Workflows
 
-The framework includes several example workflows demonstrating different features:
+GraphFusionAI includes several example workflows demonstrating different features:
 
 - `simple_workflow.py`: Basic agent interaction and task processing
 - `agent_examples.py`: Different types of specialized agents
@@ -113,3 +112,4 @@ The framework includes several example workflows demonstrating different feature
 - [Advanced Examples](advanced_examples.md): Complex usage patterns
 - [Agent Development Guide](agent_development_guide.md): Creating custom agents
 - [Dependencies](dependencies.md): Framework requirements and versions
+
