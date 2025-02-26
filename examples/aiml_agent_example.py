@@ -4,8 +4,8 @@ Example demonstrating AIML-powered agent capabilities
 """
 
 import asyncio
-from mas_framework import Agent, Role
-from mas_framework.llm import AIMLProvider, PromptTemplate
+from graphfusionai import Agent, Role
+from graphfusionai.llm import AIMLProvider, PromptTemplate
 
 class TravelAgent(Agent):
     """Agent for travel planning and recommendations"""

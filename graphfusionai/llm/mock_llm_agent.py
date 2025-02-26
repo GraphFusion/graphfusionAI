@@ -3,7 +3,7 @@ Mock LLM Agent implementation for testing and demonstration purposes.
 """
 
 from typing import Dict, Any, Optional
-from mas_framework import Agent, Role, Message
+from graphfusionai import Agent, Role, Message
 import json
 import asyncio
 

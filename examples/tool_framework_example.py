@@ -4,7 +4,7 @@ Example demonstrating the Tool and Skills Framework functionality
 
 import asyncio
 import logging
-from mas_framework.tools import (
+from graphfusionai.tools import (
     Tool, ToolMetadata, ToolRegistry, ToolLoader, ToolValidator
 )
 

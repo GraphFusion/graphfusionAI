@@ -3,12 +3,12 @@ Example demonstrating advanced orchestration capabilities
 """
 
 import asyncio
-from mas_framework import Agent, Role
-from mas_framework.orchestration import (
+from graphfusionai import Agent, Role
+from graphfusionai.orchestration import (
     AgentOrchestrator, AgentTemplate, 
     WorkflowCondition, ConditionalTask
 )
-from mas_framework.task_orchestrator import Task
+from graphfusionai.task_orchestrator import Task
 from datetime import datetime
 
 # Define specialized agents

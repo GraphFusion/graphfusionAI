@@ -1,5 +1,5 @@
 from typing import Dict, Any, Optional
-from mas_framework.knowledge_graph import KnowledgeGraph, Node, Edge
+from graphfusionai.knowledge_graph import KnowledgeGraph, Node, Edge
 import json
 
 class Memory:

@@ -6,8 +6,8 @@ import asyncio
 import logging
 from datetime import datetime
 from typing import Dict, Any, List
-from mas_framework import Agent, Role, KnowledgeGraph
-from mas_framework.memory import Memory
+from graphfusionai import Agent, Role, KnowledgeGraph
+from graphfusionai.memory import Memory
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

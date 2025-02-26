@@ -3,7 +3,7 @@
 
 import asyncio
 from typing import Dict, Any
-from mas_framework import Agent, Role, Team
+from graphfusionai import Agent, Role, Team
 
 class SpecializedTeam(Team):
     """Custom team implementation with specialized behavior"""

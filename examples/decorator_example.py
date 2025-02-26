@@ -3,7 +3,7 @@ Example demonstrating the new decorator-based agent creation and tool registrati
 """
 
 import asyncio
-from mas_framework import Agent, Role
+from graphfusionai import Agent, Role
 from datetime import datetime
 
 class DataProcessorAgent(Agent):

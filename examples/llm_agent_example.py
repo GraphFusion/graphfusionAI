@@ -4,8 +4,8 @@ Example demonstrating LLM-powered agent capabilities
 
 import asyncio
 import os
-from mas_framework import Agent, Role
-from mas_framework.llm import OpenAIProvider, PromptTemplate
+from graphfusionai import Agent, Role
+from graphfusionai.llm import OpenAIProvider, PromptTemplate
 
 @Agent.create("Researcher",
     role=Role(

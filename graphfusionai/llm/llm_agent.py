@@ -4,7 +4,7 @@ LLM Agent implementation using OpenAI's API for enhanced intelligence.
 
 import json
 from typing import Dict, Any, Optional
-from mas_framework import Agent, Role, Message
+from graphfusionai import Agent, Role, Message
 from openai import OpenAI
 import os
 

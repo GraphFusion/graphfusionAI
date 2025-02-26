@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import Dict, Any, List
 from uuid import uuid4
 import json
-from mas_framework import (
+from graphfusionai import (
     Agent, Role, KnowledgeGraph, TaskOrchestrator,
     Message, CommunicationBus, Memory, Ontology,
     Node, Edge

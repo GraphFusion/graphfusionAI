@@ -1,9 +1,9 @@
 import asyncio
-from mas_framework import (
+from graphfusionai import (
     Agent, Role, KnowledgeGraph, TaskOrchestrator,
     Message, CommunicationBus, Memory, Ontology
 )
-from mas_framework.task_orchestrator import Task  
+from graphfusionai.task_orchestrator import Task  
 from typing import Dict, Any
 import logging
 from rich.console import Console

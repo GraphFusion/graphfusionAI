@@ -3,7 +3,7 @@ Example demonstrating enhanced memory capabilities
 """
 
 import asyncio
-from mas_framework.memory.vectorstore import VectorMemory
+from graphfusionai.memory.vectorstore import VectorMemory
 from datetime import datetime
 import json
 import numpy as np
