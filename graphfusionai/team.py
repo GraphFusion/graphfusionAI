@@ -50,7 +50,8 @@ class Team:
     def share_knowledge(self, knowledge: Dict[str, Any]):
         """Share knowledge across team members"""
         # Generate a unique key for the shared knowledge
-        key = f"shared_{len(self.shared_memory.entries)}"
+        current_count = len(self.shared_memory.entries)
+        key = f"shared_{current_count}"
         try:
             self.shared_memory.store(key, knowledge)
             return True

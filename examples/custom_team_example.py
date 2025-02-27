@@ -37,19 +37,21 @@ class SpecializedTeam(Team):
 
 async def research_task(data: Dict[str, Any]) -> Dict[str, Any]:
     """Research task implementation"""
+    topic = data.get("topic", "unknown")
     return {
         "status": "success",
         "result": {
-            "findings": f"Research findings about {data.get('topic', 'unknown')}"
+            "findings": f"Research findings about {topic}"
         }
     }
 
 async def analyze_task(data: Dict[str, Any]) -> Dict[str, Any]:
     """Analysis task implementation"""
+    findings = data.get("findings", "")
     return {
         "status": "success",
         "result": {
-            "analysis": f"Analysis of {data.get('findings', '')}"
+            "analysis": f"Analysis of {findings}"
         }
     }
 
