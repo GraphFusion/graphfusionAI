@@ -1,7 +1,7 @@
-# Release Notes - GraphFusionAI v0.1.1
+# Release Notes - GraphFusionAI v0.1.2
 
 ## Overview
-GraphFusionAI v0.1.1 brings significant improvements to stability, developer experience, and code quality. This release focuses on enhancing the framework's memory system, agent capabilities, and overall robustness.
+GraphFusionAI v0.1.2 brings significant improvements to stability, developer experience, and code quality. This release focuses on enhancing the framework's memory system, agent capabilities, and overall robustness.
 
 ## What's New
 
@@ -33,12 +33,12 @@ GraphFusionAI v0.1.1 brings significant improvements to stability, developer exp
 ## Installation
 
 ```bash
-pip install graphfusionai==0.1.1
+pip install graphfusionai==0.1.2
 ```
 
 For development installation:
 ```bash
-pip install "graphfusionai[dev]==0.1.1"
+pip install "graphfusionai[dev]==0.1.2"
 ```
 
 ## Dependencies

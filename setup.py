@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="graphfusionai",
-    version="0.1.1",  # Updated version number
+    version="0.1.2",  # Updated version number
     description="A Python framework for building multi-agent systems with Knowledge Graph integration",
     python_requires=">=3.11",
     packages=find_packages(),
