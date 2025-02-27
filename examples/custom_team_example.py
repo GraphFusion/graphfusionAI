@@ -35,9 +35,8 @@ class SpecializedTeam(Team):
             "workflow_results": results
         }
 
-async def research_task(data: Dict[str, Any]) -> Dict[str, Any]:
+async def research_task(topic: str = "unknown") -> Dict[str, Any]:
     """Research task implementation"""
-    topic = data.get("topic", "unknown")
     return {
         "status": "success",
         "result": {
@@ -45,9 +44,8 @@ async def research_task(data: Dict[str, Any]) -> Dict[str, Any]:
         }
     }
 
-async def analyze_task(data: Dict[str, Any]) -> Dict[str, Any]:
+async def analyze_task(findings: str = "") -> Dict[str, Any]:
     """Analysis task implementation"""
-    findings = data.get("findings", "")
     return {
         "status": "success",
         "result": {

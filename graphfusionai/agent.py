@@ -123,13 +123,13 @@ class Agent(BaseModel):
             try:
                 if tool.async_handler:
                     # Extract the first value if kwargs has only one item
-                    if len(kwargs) == 1:
-                        kwargs = {"data": next(iter(kwargs.values()))}
+                    if len(kwargs) == 1 and "data" in kwargs:
+                        kwargs = kwargs["data"]
                         
-                    task = asyncio.create_task(tool.func(**kwargs))
+                    task = asyncio.create_task(tool.func(kwargs))
                 else:
                     task = asyncio.create_task(
-                        asyncio.to_thread(tool.func, **kwargs)
+                        asyncio.to_thread(tool.func, kwargs)
                     )
                     
                 self._active_tasks[task_id] = task
@@ -193,7 +193,16 @@ class Agent(BaseModel):
     async def _process_task(self, task: Dict[str, Any]) -> Any:
         """Process task by executing appropriate tool"""
         tool_name = task["type"]
-        result = await self.execute_tool(tool_name, **task.get("data", {}))
+        data = task.get("data", {})
+        
+        # If data is a dictionary with a single key matching the parameter name,
+        # extract the value to pass directly
+        if len(data) == 1:
+            param_name = next(iter(data))
+            if param_name in inspect.signature(self._tools[tool_name].func).parameters:
+                data = data[param_name]
+                
+        result = await self.execute_tool(tool_name, data=data)
         return result
 
     async def cleanup(self):
