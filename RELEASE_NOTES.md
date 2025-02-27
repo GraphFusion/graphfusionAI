@@ -1,49 +1,34 @@
 # Release Notes - GraphFusionAI v0.1.1
 
 ## Overview
-GraphFusionAI v0.1.1 brings significant improvements to stability, developer experience, and code quality. This release focuses on making the framework more robust and easier to work with.
+GraphFusionAI v0.1.1 brings significant improvements to stability, developer experience, and code quality. This release focuses on enhancing the framework's memory system, agent capabilities, and overall robustness.
 
 ## What's New
 
-### 🧪 Testing Infrastructure
-- Added comprehensive unit tests for core components
-  - Agent functionality tests
-  - Memory system tests
-  - Vector store operations tests
-- Integrated pytest with async support
-- Added test coverage reporting
+### 🧠 Memory System Enhancements
+- Implemented new shared memory architecture
+- Improved memory persistence and retrieval
+- Enhanced memory synchronization between agents
 
-### 🛠️ Development Tools
-- Added CI/CD pipeline with GitHub Actions
-  - Automated testing on Python 3.11 and 3.12
-  - Code quality checks
-  - Test coverage reporting
-- Integrated development tools:
-  - Black for code formatting
-  - isort for import sorting
-  - mypy for type checking
+### 🤖 Agent Framework Updates
+- Fixed critical issues in agent implementation
+- Added new integrated example showcasing multi-agent coordination
+- Improved agent communication patterns
+
+### 📚 Documentation & Examples
+- Added new advanced orchestration example
+- Updated custom team example implementation
+- Enhanced code documentation and type hints
 
 ### 🐛 Bug Fixes
-- Fixed NumPy compatibility issues
-  - Resolved deprecated np.bool usage
-  - Improved dtype consistency in vector operations
-  - Updated NumPy version requirements
-- Improved example code reliability
-  - Updated README examples
-  - Fixed package installation issues
-  - Added proper async/await syntax
+- Resolved memory-related synchronization issues
+- Fixed agent communication edge cases
+- Improved error handling in core components
 
-### 📚 Documentation
-- Added CHANGELOG.md for version tracking
-- Improved type hints and docstrings
-- Enhanced example code documentation
-- Added development setup instructions
-
-### 💻 Code Quality
-- Improved error handling
-- Enhanced logging system
-- Better code organization
-- Type safety improvements
+### 🛠️ Development Tools
+- Added comprehensive testing infrastructure
+- Integrated CI/CD pipeline with GitHub Actions
+- Enhanced code quality checks
 
 ## Installation
 
@@ -56,21 +41,21 @@ For development installation:
 pip install "graphfusionai[dev]==0.1.1"
 ```
 
+## Dependencies
+- Python >=3.11
+- OpenAI >=1.64.0
+- Spacy >=3.8.4
+- See pyproject.toml for complete list
+
 ## Required Actions
-- Update to NumPy <2.0.0 for compatibility
 - Install spaCy model: `python -m spacy download en_core_web_sm`
 - Review updated example code in documentation
 
 ## Breaking Changes
 None. This is a backward-compatible release.
 
-## Dependencies
-- Python >=3.11
-- NumPy <2.0.0,>=1.24.0
-- See setup.py for complete list
-
 ## Known Issues
-- Some example code requires OpenAI API key
+- Some examples require OpenAI API key configuration
 - Limited support for Python versions below 3.11
 
 ## What's Next
@@ -79,8 +64,7 @@ None. This is a backward-compatible release.
 - Better multi-agent coordination
 - Extended tool framework
 
-## Contributors
-Thank you to all contributors who helped make this release possible!
-
 ## Support
 For issues and feature requests, please use our GitHub issue tracker.
+
+Last Updated: February 27, 2025
