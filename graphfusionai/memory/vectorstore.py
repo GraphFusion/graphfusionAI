@@ -53,7 +53,7 @@ class VectorMemory(BaseMemory):
         """
         try:
             # Create a simple vector based on character frequencies
-            freq = np.zeros(self.dimension)
+            freq = np.zeros(self.dimension, dtype=np.float32)
 
             # Handle long texts by chunking
             chunk_size = 1000  # Process text in chunks
@@ -91,7 +91,7 @@ class VectorMemory(BaseMemory):
                 logger.info(f"Generated vector from text for key {key}")
             elif vector is None:
                 # Use random vector as fallback
-                vector = np.random.randn(self.dimension)
+                vector = np.random.randn(self.dimension).astype(np.float32)
                 vector = vector / np.linalg.norm(vector)
                 logger.warning(f"Using random vector for key {key}")
 
@@ -174,7 +174,7 @@ class VectorMemory(BaseMemory):
                 )
 
             # Calculate similarities
-            vectors = np.array(self.vectors)
+            vectors = np.array(self.vectors, dtype=np.float32)
             similarities = cosine_similarity([query_vector], vectors)[0]
 
             # Get top results

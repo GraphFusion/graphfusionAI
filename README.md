@@ -35,22 +35,31 @@ GraphFusionAI is a Python framework for building multi-agent systems where AI ag
 
 ```bash
 pip install graphfusionai
+python -m spacy download en_core_web_sm
 ```
 
 ## Quick Start
 
+First, install the required dependencies and language model:
+
+```bash
+pip install graphfusionai
+python -m spacy download en_core_web_sm
+```
+
 Here's a simple example of creating a multi-agent system:
 
 ```python
-from graphfusionai import Agent, Role, Tool, KnowledgeGraph, TaskOrchestrator
-
-# Define a tool
-@Tool.create(
-    name="calculate",
-    description="Performs calculations"
+import asyncio
+from graphfusionai import (
+    Agent, Role, KnowledgeGraph, TaskOrchestrator,
+    Message, CommunicationBus, Memory
 )
-def calculate(x: int, y: int) -> int:
-    return x + y
+from graphfusionai.task_orchestrator import Task
+from rich.console import Console
+
+# Initialize console for nice output
+console = Console()
 
 # Define roles
 researcher_role = Role(
@@ -59,37 +68,67 @@ researcher_role = Role(
     description="Performs research and analysis tasks"
 )
 
-# Create agents
+# Create an agent class
 class ResearchAgent(Agent):
-    async def _process_task(self, task):
+    async def _process_task(self, task: dict) -> dict:
         if task["type"] == "research":
             # Use the knowledge graph for enhanced understanding
             self.kg.extract_knowledge_from_text(task["data"]["content"])
             return {"research_results": f"Research completed for {task['data']['topic']}"}
-        
         return None
 
-# Initialize components
-kg = KnowledgeGraph()
-orchestrator = TaskOrchestrator()
+async def main():
+    # Initialize components
+    kg = KnowledgeGraph()
+    orchestrator = TaskOrchestrator()
+    comm_bus = CommunicationBus()
+    
+    # Create agent instance
+    researcher = ResearchAgent(
+        name="ResearchAgent1",
+        role=researcher_role
+    )
+    
+    # Create a task
+    research_task = Task(
+        id="task1",
+        type="research",
+        data={
+            "topic": "AI Knowledge Graphs",
+            "content": "Researching the integration of AI with knowledge graphs."
+        },
+        assigned_to=researcher.id
+    )
+    
+    # Add task to orchestrator
+    orchestrator.add_task(research_task)
+    
+    # Start communication bus
+    comm_bus_task = asyncio.create_task(comm_bus.start())
+    
+    try:
+        # Execute task
+        result = await orchestrator.execute_task(researcher, research_task)
+        console.print("[green]Research task completed:", result)
+    finally:
+        # Clean up
+        comm_bus_task.cancel()
+        try:
+            await comm_bus_task
+        except asyncio.CancelledError:
+            pass
 
-# Create and use agents
-researcher = ResearchAgent(
-    name="ResearchAgent1",
-    role=researcher_role
-)
-
-# Execute tasks
-task = {
-    "id": "task1",
-    "type": "research",
-    "data": {
-        "topic": "AI Knowledge Graphs",
-        "content": "Researching the integration of AI with knowledge graphs."
-    }
-}
-result = await orchestrator.execute_task(researcher, task)
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
+
+Save this code as `simple_example.py` and run it with:
+
+```bash
+python simple_example.py
+```
+
+For more examples, check out our [examples directory on GitHub](https://github.com/GraphFusion/graphfusionAI/tree/main/examples).
 
 ## Example Workflows
 
@@ -112,4 +151,3 @@ GraphFusionAI includes several example workflows demonstrating different feature
 - [Advanced Examples](https://github.com/GraphFusion/graphfusionAI/blob/main/docs/advanced_examples.md): Complex usage patterns
 - [Agent Development Guide](https://github.com/GraphFusion/graphfusionAI/blob/main/docs/agent_development_guide.md): Creating custom agents
 - [Dependencies](https://github.com/GraphFusion/graphfusionAI/blob/main/docs/dependencies.md): Framework requirements and versions
-
