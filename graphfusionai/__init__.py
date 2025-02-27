@@ -22,6 +22,7 @@ __all__ = [
     "Task",
     "Message",
     "CommunicationBus",
+    "Team",
     "Memory",
     "Ontology",
     "LLMProvider" 
