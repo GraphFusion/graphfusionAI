@@ -48,7 +48,11 @@ class Team:
                 results[role] = {"status": "error", "error": str(e)}
         return results
         
-    def share_knowledge(self, knowledge: Dict[str, Any]):
-        """Share knowledge across team members"""
-        self.shared_memory.store(f"shared_{len(self.shared_memory._data)}", knowledge)
+    #def share_knowledge(self, knowledge: Dict[str, Any]):
+       # """Share knowledge across team members"""
+        #self.shared_memory.store(f"shared_{len(self.shared_memory._data)}", knowledge)
+        #return True
+    def share_knowledge(self, knowledge):
+        current_count = self.shared_memory.get_entry_count()
+        self.shared_memory.store(f"shared_{current_count}", knowledge)
         return True
