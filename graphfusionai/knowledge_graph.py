@@ -1,14 +1,20 @@
 import networkx as nx
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List, Optional, Tuple, Set
 from pydantic import BaseModel
 import json
 import spacy
+from functools import lru_cache
+import logging
 
 class Node(BaseModel):
     """Knowledge Graph Node"""
     id: str
     type: str
     properties: Dict[str, Any] = {}
+
+    def validate_type(self) -> bool:
+        """Validate node type against allowed types"""
+        return self.type in KnowledgeGraph.ALLOWED_NODE_TYPES
 
 class Edge(BaseModel):
     """Knowledge Graph Edge"""
@@ -17,106 +23,141 @@ class Edge(BaseModel):
     type: str
     properties: Dict[str, Any] = {}
 
+    def validate_type(self) -> bool:
+        """Validate edge type against allowed types"""
+        return self.type in KnowledgeGraph.ALLOWED_EDGE_TYPES
+
 class KnowledgeGraph:
     """Enhanced Knowledge Graph implementation with text extraction and reasoning"""
 
+    # Define allowed types
+    ALLOWED_NODE_TYPES = {
+        "entity", "concept", "event", "attribute",
+        "location", "person", "organization", "date"
+    }
+    
+    ALLOWED_EDGE_TYPES = {
+        "has", "is_a", "part_of", "related_to",
+        "causes", "located_in", "occurs_at", "belongs_to"
+    }
+
     def __init__(self):
         self.graph = nx.MultiDiGraph()
-        # Load NLP model for entity extraction
-        self.nlp = spacy.load("en_core_web_sm")
+        self.logger = logging.getLogger("KnowledgeGraph")
+        
+        # Initialize NLP model
+        try:
+            self.nlp = spacy.load("en_core_web_sm")
+            self.logger.info("Successfully loaded spaCy model")
+        except OSError as e:
+            self.logger.error(f"Failed to load spaCy model: {str(e)}")
+            raise RuntimeError("Failed to initialize NLP model. Please ensure spaCy model is installed.")
+        
+        # Cache for entity extraction
+        self._entity_cache = {}
 
-    def add_node(self, node: Node):
+    def add_node(self, node: Node) -> bool:
         """Add a node to the knowledge graph"""
-        self.graph.add_node(
-            node.id,
-            type=node.type,
-            properties=node.properties
-        )
+        try:
+            if not node.validate_type():
+                self.logger.warning(f"Invalid node type: {node.type}")
+                return False
+                
+            self.graph.add_node(
+                node.id,
+                type=node.type,
+                properties=node.properties
+            )
+            return True
+        except Exception as e:
+            self.logger.error(f"Error adding node: {str(e)}")
+            return False
 
-    def add_edge(self, edge: Edge):
+    def add_edge(self, edge: Edge) -> bool:
         """Add an edge to the knowledge graph"""
-        self.graph.add_edge(
-            edge.source,
-            edge.target,
-            type=edge.type,
-            properties=edge.properties
-        )
+        try:
+            if not edge.validate_type():
+                self.logger.warning(f"Invalid edge type: {edge.type}")
+                return False
+                
+            if not (self.graph.has_node(edge.source) and self.graph.has_node(edge.target)):
+                self.logger.warning("Source or target node does not exist")
+                return False
+                
+            self.graph.add_edge(
+                edge.source,
+                edge.target,
+                type=edge.type,
+                properties=edge.properties
+            )
+            return True
+        except Exception as e:
+            self.logger.error(f"Error adding edge: {str(e)}")
+            return False
+
+    @lru_cache(maxsize=1000)
+    def _extract_entities(self, text: str) -> List[Tuple[str, str, Dict[str, Any]]]:
+        """Cached entity extraction from text"""
+        doc = self.nlp(text)
+        entities = []
+        for ent in doc.ents:
+            entity_type = self._map_spacy_type_to_node_type(ent.label_)
+            if entity_type:
+                entities.append((
+                    ent.text,
+                    entity_type,
+                    {"spacy_label": ent.label_}
+                ))
+        return entities
+
+    def _map_spacy_type_to_node_type(self, spacy_type: str) -> Optional[str]:
+        """Map spaCy entity types to knowledge graph node types"""
+        mapping = {
+            "PERSON": "person",
+            "ORG": "organization",
+            "GPE": "location",
+            "DATE": "date",
+            "EVENT": "event",
+            "NORP": "concept",
+            "FAC": "location",
+            "PRODUCT": "entity"
+        }
+        return mapping.get(spacy_type)
 
     def extract_knowledge_from_text(self, text: str) -> List[Tuple[Node, Optional[Edge]]]:
         """Extract knowledge from text and create nodes/edges"""
-        doc = self.nlp(text)
-        extracted_elements = []
-
-        # Extract and store entities
-        entity_nodes = {}
-        for ent in doc.ents:
-            node = Node(
-                id=f"{ent.label_}_{len(self.graph.nodes)}",
-                type=ent.label_,
-                properties={
-                    "text": ent.text,
-                    "start": ent.start_char,
-                    "end": ent.end_char,
-                    "normalized": ent.text.lower()
-                }
-            )
-            extracted_elements.append((node, None))
-            entity_nodes[ent.text] = node.id
-
-            # Handle company name variations
-            if ent.label_ == "ORG" and "SpaceX" in ent.text:
-                spacex_node = Node(
-                    id=f"ORG_SpaceX",
-                    type="ORG",
-                    properties={"text": "SpaceX", "normalized": "spacex"}
+        try:
+            extracted_elements = []
+            entities = self._extract_entities(text)
+            
+            for ent_text, ent_type, props in entities:
+                # Create node for entity
+                node = Node(
+                    id=f"{ent_type}_{len(self.graph.nodes)}",
+                    type=ent_type,
+                    properties={"text": ent_text, **props}
                 )
-                extracted_elements.append((spacex_node, None))
-                entity_nodes["SpaceX"] = spacex_node.id
-
-        # Extract relationships from dependency parsing
-        for token in doc:
-            if token.dep_ in ["nsubj", "dobj", "pobj"]:
-                # Find related entities
-                head_ent = None
-                token_ent = None
-
-                # Search in entity spans
-                for ent in doc.ents:
-                    if token.head.i in range(ent.start, ent.end):
-                        head_ent = ent
-                    if token.i in range(ent.start, ent.end):
-                        token_ent = ent
-
-                if head_ent and token_ent:
-                    # Create relationship
-                    edge = Edge(
-                        source=entity_nodes[head_ent.text],
-                        target=entity_nodes[token_ent.text],
-                        type=token.dep_,
-                        properties={
-                            "sentence": str(token.sent),
-                            "relationship_type": "direct",
-                            "confidence": 0.9
-                        }
-                    )
-                    extracted_elements.append((None, edge))
-
-                    # Add collaboration edge for organizations
-                    if (head_ent.label_ == "ORG" and token_ent.label_ == "ORG" and
-                        "collaborate" in str(token.sent).lower()):
-                        collab_edge = Edge(
-                            source=entity_nodes[head_ent.text],
-                            target=entity_nodes[token_ent.text],
-                            type="collaborates_with",
-                            properties={
-                                "sentence": str(token.sent),
-                                "relationship_type": "inferred",
-                                "confidence": 0.8
-                            }
-                        )
-                        extracted_elements.append((None, collab_edge))
-
-        return extracted_elements
+                
+                if self.add_node(node):
+                    extracted_elements.append((node, None))
+                    
+                    # Try to find relationships with existing nodes
+                    for other_node in self.graph.nodes:
+                        if other_node != node.id:
+                            # Simple relationship detection based on proximity
+                            edge = Edge(
+                                source=node.id,
+                                target=other_node,
+                                type="related_to"
+                            )
+                            if self.add_edge(edge):
+                                extracted_elements.append((node, edge))
+                                
+            return extracted_elements
+            
+        except Exception as e:
+            self.logger.error(f"Error extracting knowledge: {str(e)}")
+            return []
 
     def reason(self, query: str) -> List[Dict[str, Any]]:
         """Perform reasoning on the knowledge graph"""
@@ -263,3 +304,8 @@ class KnowledgeGraph:
         with open(filepath, 'r') as f:
             data = json.load(f)
         self.graph = nx.node_link_graph(data, edges="edges")  # Explicitly set edges parameter
+
+    def cleanup(self):
+        """Cleanup resources"""
+        self._entity_cache.clear()
+        self.graph.clear()

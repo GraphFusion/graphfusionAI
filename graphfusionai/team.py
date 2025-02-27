@@ -1,4 +1,3 @@
-
 """Team management system for agent collaboration"""
 
 from typing import Dict, Any, Optional, List
@@ -50,5 +49,25 @@ class Team:
         
     def share_knowledge(self, knowledge: Dict[str, Any]):
         """Share knowledge across team members"""
-        self.shared_memory.store(f"shared_{len(self.shared_memory._data)}", knowledge)
-        return True
+        # Generate a unique key for the shared knowledge
+        key = f"shared_{len(self.shared_memory.entries)}"
+        try:
+            self.shared_memory.store(key, knowledge)
+            return True
+        except Exception as e:
+            return {"status": "error", "error": str(e)}
+
+    async def cleanup(self):
+        """Cleanup team resources"""
+        # Cleanup shared memory
+        self.shared_memory.clear()
+        
+        # Cleanup knowledge graph
+        self.knowledge_graph.cleanup()
+        
+        # Cleanup all member agents
+        for agent in self.members.values():
+            await agent.cleanup()
+            
+        # Clear members
+        self.members.clear()

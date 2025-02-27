@@ -7,6 +7,8 @@ import logging
 from rich.console import Console
 import inspect
 from functools import wraps
+import asyncio
+from contextlib import asynccontextmanager
 
 from .llm import (
     LLMProvider, PromptManager, ConversationManager,
@@ -22,12 +24,25 @@ class Role(BaseModel):
     capabilities: List[str]
     description: str
 
+    def validate_capabilities(self, tools: List[str]) -> bool:
+        """Validate that all required capabilities are available"""
+        return all(cap in tools for cap in self.capabilities)
+
 class Tool(BaseModel):
     """Tool definition for agent capabilities"""
     name: str
     description: str
     func: Callable
     async_handler: bool = False
+    timeout: Optional[float] = None
+    
+    def validate(self) -> bool:
+        """Validate tool configuration"""
+        if not callable(self.func):
+            return False
+        if self.async_handler and not inspect.iscoroutinefunction(self.func):
+            return False
+        return True
 
 class Agent(BaseModel):
     """Base agent class with core functionality"""
@@ -40,6 +55,7 @@ class Agent(BaseModel):
     _logger: logging.Logger = PrivateAttr()
     _memory: Dict[str, Any] = PrivateAttr(default_factory=dict)
     _tools: Dict[str, Tool] = PrivateAttr(default_factory=dict)
+    _active_tasks: Dict[str, asyncio.Task] = PrivateAttr(default_factory=dict)
 
     # LLM-related attributes
     _llm_provider: Optional[LLMProvider] = PrivateAttr(default=None)
@@ -51,155 +67,155 @@ class Agent(BaseModel):
 
     def __init__(self, **data):
         super().__init__(**data)
-        self._logger = logging.getLogger(f"Agent-{self.name}")
-        self._memory = {}
-        self._tools = {}
+        self._logger = logging.getLogger(f"Agent_{self.name}")
+        self._setup_logging()
 
-        # Initialize LLM components if provider is set
-        if "_llm_provider" in data:
-            self._llm_provider = data["_llm_provider"]
-            self._prompt_manager = PromptManager()
-            self._conversation = ConversationManager()
+    def _setup_logging(self):
+        """Setup agent-specific logging"""
+        formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        )
+        handler = logging.StreamHandler()
+        handler.setFormatter(formatter)
+        self._logger.addHandler(handler)
+        self._logger.setLevel(logging.INFO)
 
-    @classmethod
-    def create(cls, name: str, role: Optional[Role] = None, **kwargs):
-        """Decorator for creating agent classes"""
-        def decorator(cls_: Type[T]) -> Type[T]:
-            if not role:
-                # Create default role from class attributes
-                capabilities = [
-                    name for name, _ in inspect.getmembers(cls_, predicate=inspect.ismethod)
-                    if not name.startswith('_')
-                ]
-                role_ = Role(
-                    name=cls_.__name__.lower(),
-                    capabilities=capabilities,
-                    description=cls_.__doc__ or f"Agent for {cls_.__name__}"
-                )
-            else:
-                role_ = role
+    def register_tool(self, tool: Tool) -> bool:
+        """Register a new tool with validation"""
+        try:
+            if not tool.validate():
+                self._logger.error(f"Invalid tool configuration: {tool.name}")
+                return False
+                
+            self._tools[tool.name] = tool
+            self._logger.info(f"Tool registered: {tool.name}")
+            return True
+        except Exception as e:
+            self._logger.error(f"Error registering tool {tool.name}: {str(e)}")
+            return False
 
-            @wraps(cls_)
-            def wrapped(*args, **kwargs):
-                # Ensure required fields are passed
-                kwargs['name'] = name
-                kwargs['role'] = role_
-                instance = cls_(*args, **kwargs)
-                return instance
-            return wrapped
-        return decorator
+    @asynccontextmanager
+    async def _tool_execution_context(self, tool_name: str):
+        """Context manager for tool execution with timeout and cleanup"""
+        tool = self._tools.get(tool_name)
+        if not tool:
+            raise ValueError(f"Tool not found: {tool_name}")
+            
+        task_id = str(uuid4())
+        try:
+            yield task_id
+        finally:
+            if task_id in self._active_tasks:
+                task = self._active_tasks[task_id]
+                if not task.done():
+                    task.cancel()
+                    try:
+                        await task
+                    except asyncio.CancelledError:
+                        pass
+                del self._active_tasks[task_id]
 
-    def tool(self, name: Optional[str] = None, description: Optional[str] = None):
-        """Decorator for registering tools"""
-        def decorator(func: Callable):
-            tool_name = name or func.__name__
-            tool_desc = description or func.__doc__ or f"Tool {tool_name}"
-            is_async = inspect.iscoroutinefunction(func)
-
-            self._tools[tool_name] = Tool(
-                name=tool_name,
-                description=tool_desc,
-                func=func,
-                async_handler=is_async
-            )
-            return func
-        return decorator
+    async def execute_tool(self, tool_name: str, **kwargs) -> Any:
+        """Execute a tool with proper error handling and timeout"""
+        async with self._tool_execution_context(tool_name) as task_id:
+            tool = self._tools[tool_name]
+            
+            try:
+                if tool.async_handler:
+                    # Extract the first value if kwargs has only one item
+                    if len(kwargs) == 1:
+                        kwargs = {"data": next(iter(kwargs.values()))}
+                        
+                    task = asyncio.create_task(tool.func(**kwargs))
+                else:
+                    task = asyncio.create_task(
+                        asyncio.to_thread(tool.func, **kwargs)
+                    )
+                    
+                self._active_tasks[task_id] = task
+                
+                if tool.timeout:
+                    result = await asyncio.wait_for(task, timeout=tool.timeout)
+                else:
+                    result = await task
+                    
+                return {
+                    "status": "success",
+                    "result": result,
+                    "tool": tool_name
+                }
+                
+            except asyncio.TimeoutError:
+                self._logger.error(f"Tool {tool_name} timed out")
+                return {
+                    "status": "error",
+                    "error": f"Tool execution timed out after {tool.timeout}s",
+                    "tool": tool_name
+                }
+            except Exception as e:
+                self._logger.error(f"Error executing tool {tool_name}: {str(e)}")
+                return {
+                    "status": "error",
+                    "error": str(e),
+                    "tool": tool_name
+                }
 
     async def handle_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Handle incoming tasks based on agent capabilities"""
-        if task["type"] not in self.role.capabilities:
-            raise ValueError(f"Task type {task['type']} not supported by agent {self.name}")
-
+        """Handle an incoming task with proper validation"""
         try:
+            # Validate task format
+            if not isinstance(task, dict):
+                raise ValueError("Task must be a dictionary")
+                
+            if "type" not in task:
+                raise ValueError("Task must have a type")
+                
+            # Check if we have required capabilities
+            if task["type"] not in self._tools:
+                raise ValueError(f"Agent lacks required tool: {task['type']}")
+                
+            # Execute task
             result = await self._process_task(task)
             return {
                 "status": "success",
-                "agent_id": self.id,
-                "result": result
+                "result": result,
+                "task_id": task.get("id", str(uuid4()))
             }
+            
         except Exception as e:
-            self._logger.error(f"Error processing task: {str(e)}")
+            self._logger.error(f"Error handling task: {str(e)}")
             return {
                 "status": "error",
-                "agent_id": self.id,
-                "error": str(e)
+                "error": str(e),
+                "task_id": task.get("id", str(uuid4()))
             }
 
     async def _process_task(self, task: Dict[str, Any]) -> Any:
-        """Process task based on type"""
-        # Override this method in specific agent implementations
-        raise NotImplementedError
+        """Process task by executing appropriate tool"""
+        tool_name = task["type"]
+        result = await self.execute_tool(tool_name, **task.get("data", {}))
+        return result
 
-    def update_state(self, state_update: Dict[str, Any]):
-        """Update agent's internal state"""
-        self.state.update(state_update)
-        self._logger.debug(f"State updated: {self.state}")
-
-    def remember(self, key: str, value: Any):
-        """Store information in agent's memory"""
-        self._memory[key] = value
-
-    def recall(self, key: str) -> Optional[Any]:
-        """Retrieve information from agent's memory"""
-        return self._memory.get(key)
-
-    async def execute_tool(self, tool_name: str, **kwargs) -> Any:
-        """Execute a registered tool"""
-        if tool_name not in self._tools:
-            raise ValueError(f"Tool {tool_name} not found")
-
-        tool = self._tools[tool_name]
-        if tool.async_handler:
-            return await tool.func(**kwargs)
-        return tool.func(**kwargs)
-
-    # LLM-related methods
-    async def complete(self, prompt: str, **kwargs) -> str:
-        """Generate completion using LLM"""
-        if not self._llm_provider:
-            raise ValueError("LLM provider not configured")
-        return await self._llm_provider.complete(prompt, **kwargs)
-
-    async def chat(self, 
-        messages: Optional[List[Dict[str, str]]] = None,
-        **kwargs
-    ) -> str:
-        """Generate chat completion using LLM"""
-        if not self._llm_provider:
-            raise ValueError("LLM provider not configured")
-
-        if messages is None and self._conversation:
-            messages = self._conversation.format_for_llm()
-
-        response = await self._llm_provider.chat(messages, **kwargs)
-
+    async def cleanup(self):
+        """Cleanup agent resources"""
+        # Cancel all active tasks
+        for task_id, task in list(self._active_tasks.items()):
+            if not task.done():
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
+            del self._active_tasks[task_id]
+            
+        # Clear memory and tools
+        self._memory.clear()
+        self._tools.clear()
+        
+        # Cleanup LLM resources if present
+        if self._llm_provider:
+            await self._llm_provider.cleanup()
         if self._conversation:
-            self._conversation.add_message("assistant", response)
-
-        return response
-
-    async def embed(self, text: str) -> List[float]:
-        """Generate embeddings using LLM"""
-        if not self._llm_provider:
-            raise ValueError("LLM provider not configured")
-        return await self._llm_provider.embed(text)
-
-    def set_llm_provider(self, provider: LLMProvider):
-        """Set LLM provider for the agent"""
-        self._llm_provider = provider
-        if not self._prompt_manager:
-            self._prompt_manager = PromptManager()
-        if not self._conversation:
-            self._conversation = ConversationManager()
-
-    def add_prompt_template(self, template: PromptTemplate):
-        """Add prompt template"""
-        if not self._prompt_manager:
-            self._prompt_manager = PromptManager()
-        self._prompt_manager.add_template(template)
-
-    def format_prompt(self, template_name: str, **kwargs) -> str:
-        """Format prompt template"""
-        if not self._prompt_manager:
-            raise ValueError("Prompt manager not configured")
-        return self._prompt_manager.format_prompt(template_name, **kwargs)
+            self._conversation.clear()
+            
+        self._logger.info("Agent resources cleaned up")
