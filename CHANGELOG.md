@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.1] - 2025-02-27
 
-### Added
+### Added 
 - Unit tests for core components (Agent, Memory)
 - CI/CD pipeline with GitHub Actions
 - Development tools configuration (black, isort, mypy)

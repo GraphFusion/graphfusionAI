@@ -13,7 +13,7 @@
 <h3 align="center">
    <a href="https://github.com/GraphFusion/graphfusionAI/tree/main/docs"><b>Docs</b></a> &bull;
    <a href="https://graphfusion.github.io/graphfusion.io/"><b>Website</b></a>
-</h3>
+</h3> 
 <br />
 
 ⚠️ **This project is in early development!** Expect bugs, incomplete features, and potential breaking changes. If you're contributing, **please read the codebase carefully** and help us improve it.
