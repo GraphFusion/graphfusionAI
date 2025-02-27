@@ -20,7 +20,7 @@ Thank you for your interest in contributing to the GraphFusion Core project! Thi
 2. **Clone Your Fork**: Clone your fork to your local machine.
    ```bash
    git clone https://github.com/your-username/graphfusion-core.git
-   cd graphfusion-core
+   cd graphfusionai
    ```
 3. **Create a Branch**: Create a new branch for each feature or bug fix.
    ```bash
