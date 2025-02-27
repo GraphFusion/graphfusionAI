@@ -11,7 +11,7 @@ from graphfusionai.team import Team
 from graphfusionai.ontology import Ontology
 from graphfusionai.llm.base import LLMProvider 
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __all__ = [
     "Agent",
     "Role",
