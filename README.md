@@ -34,8 +34,8 @@ GraphFusionAI is a Python framework for building multi-agent systems where AI ag
 ## Installation
 
 ```bash
-pip install graphfusionai
-python -m spacy download en_core_web_sm
+!pip install graphfusionai
+!python -m spacy download en_core_web_sm
 ```
 
 ## Quick Start
