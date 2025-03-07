@@ -139,8 +139,8 @@ async def generate_report_task(data: Dict) -> Dict[str, Any]:
 async def main():
     # Initialize API keys
     api_keys = {
-        "news_api": "your_news_api_key",
-        "financial_api": "your_financial_api_key"
+        "news_api": "bb4833ea6d8d4df2a88aa5a4a3308bc1",
+        "financial_api": "dj0yJmk9aVdCTUxGdU03M09YJmQ9WVdrOVRXcFFRMEpDZFhBbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWY5"
     }
     
     # Create Market Intelligence Team
