@@ -2,255 +2,193 @@
 
 ## Learning Objectives
 By the end of this module, you will:
-- Master agent state management
+- Master state management techniques
 - Implement sophisticated memory systems
-- Integrate knowledge graphs
+- Integrate knowledge graphs for enhanced reasoning
 - Build agents with learning capabilities
 
-## 1. State Management
+## 1. Advanced State Management
 
-Agent state represents the current condition and context of an agent. It's crucial for:
-- Tracking progress
-- Maintaining configuration
-- Managing resources
-- Handling dependencies
-
-### Implementation Example
-
+### Persistent State
 ```python
-from graphfusionai import Agent, Role, State
+from graphfusionai import Agent, Role, StateManager
 from typing import Dict, Any
-from datetime import datetime
+import json
 
-class StateAwareAgent(Agent):
-    def __init__(self, name: str, role: Role):
+class PersistentAgent(Agent):
+    def __init__(self, name: str, role: Role, state_file: str):
         super().__init__(name=name, role=role)
-        self.state = State({
-            "status": "idle",
-            "last_active": None,
-            "task_count": 0,
-            "resources": {},
-            "configuration": {}
-        })
+        self.state_file = state_file
+        self.state_manager = StateManager()
+        self._load_state()
 
-    async def _process_task(self, task: Dict[str, Any]) -> Any:
-        # Update state before processing
-        self.state.update({
-            "status": "processing",
-            "last_active": datetime.now().isoformat(),
-            "task_count": self.state.get("task_count", 0) + 1
-        })
-
+    def _load_state(self):
         try:
-            result = await self._execute_task(task)
-            
-            # Update state after successful processing
-            self.state.update({
-                "status": "idle",
-                "last_result": result
-            })
-            
-            return result
-            
-        except Exception as e:
-            # Update state to reflect error
-            self.state.update({
-                "status": "error",
-                "last_error": str(e)
-            })
-            raise
+            with open(self.state_file, 'r') as f:
+                self.state = json.load(f)
+        except FileNotFoundError:
+            self.state = {"initialized": True}
+            self._save_state()
 
-    def get_status(self) -> Dict[str, Any]:
-        return self.state.to_dict()
+    def _save_state(self):
+        with open(self.state_file, 'w') as f:
+            json.dump(self.state, f)
+
+    async def update_state(self, updates: Dict[str, Any]):
+        self.state.update(updates)
+        self._save_state()
 ```
 
 ## 2. Memory Systems
 
-Memory systems allow agents to:
-- Store and retrieve information
-- Learn from experience
-- Make informed decisions
-- Share knowledge
-
-### Types of Memory
-
-1. **Short-term Memory**
-   - Temporary storage
-   - Recent events and context
-   - Limited capacity
-
-2. **Long-term Memory**
-   - Persistent storage
-   - Learning and experience
-   - Pattern recognition
-
-3. **Working Memory**
-   - Active processing
-   - Current task context
-   - Decision making
-
-### Implementation Example
-
+### Implementing Short and Long-term Memory
 ```python
-from graphfusionai import Agent, Role, Memory
-from typing import Dict, Any, Optional
-import json
+from graphfusionai import Memory, MemoryType
 from datetime import datetime, timedelta
 
 class MemoryAwareAgent(Agent):
     def __init__(self, name: str, role: Role):
         super().__init__(name=name, role=role)
-        
-        # Initialize different memory types
-        self.short_term = Memory(max_size=100, ttl=timedelta(minutes=30))
-        self.long_term = Memory(persistence_path="agent_memory.json")
-        self.working = Memory(max_size=10)
+        self.short_term = Memory(memory_type=MemoryType.SHORT_TERM)
+        self.long_term = Memory(memory_type=MemoryType.LONG_TERM)
 
-    async def _process_task(self, task: Dict[str, Any]) -> Any:
-        # Store task in short-term memory
-        self.short_term.store(
-            key=f"task_{datetime.now().isoformat()}",
-            value=task
-        )
+    async def remember(self, key: str, value: Any, duration: timedelta = None):
+        if duration:
+            await self.short_term.store(key, value, expiry=duration)
+        else:
+            await self.long_term.store(key, value)
 
-        # Check if we've seen similar tasks
-        similar_tasks = self._find_similar_tasks(task)
-        if similar_tasks:
-            # Use previous experience
-            self.working.store("reference_tasks", similar_tasks)
+    async def recall(self, key: str) -> Any:
+        # Try short-term memory first
+        value = await self.short_term.retrieve(key)
+        if value is not None:
+            return value
 
-        result = await self._execute_task(task)
+        # Fall back to long-term memory
+        return await self.long_term.retrieve(key)
 
-        # Learn from experience
-        self._store_experience(task, result)
-        
-        return result
-
-    def _find_similar_tasks(self, task: Dict[str, Any]) -> list:
-        similar = []
-        for key, stored_task in self.long_term.items():
-            if self._calculate_similarity(task, stored_task) > 0.8:
-                similar.append(stored_task)
-        return similar
-
-    def _store_experience(self, task: Dict[str, Any], result: Any) -> None:
-        # Store in long-term memory
-        self.long_term.store(
-            key=f"experience_{datetime.now().isoformat()}",
-            value={
-                "task": task,
-                "result": result,
-                "context": self.working.get_all()
-            }
-        )
-
-    def _calculate_similarity(self, task1: Dict[str, Any], 
-                            task2: Dict[str, Any]) -> float:
-        # Implement similarity calculation
-        # This is a simplified example
-        return sum(1 for k, v in task1.items() 
-                  if k in task2 and task2[k] == v) / len(task1)
-
-    def get_experience(self, task_type: str) -> list:
-        return [
-            exp for exp in self.long_term.values()
-            if exp["task"].get("type") == task_type
-        ]
+    async def forget(self, key: str):
+        await self.short_term.delete(key)
+        await self.long_term.delete(key)
 ```
 
 ## 3. Knowledge Graph Integration
 
-Knowledge graphs enable agents to:
-- Represent complex relationships
-- Reason about entities and connections
-- Share structured knowledge
-- Make inferences
-
-### Implementation Example
-
+### Building a Knowledge Base
 ```python
-from graphfusionai import Agent, Role, KnowledgeGraph
-from graphfusionai.knowledge import Node, Edge, Query
-from typing import Dict, Any
+from graphfusionai import KnowledgeGraph, Node, Edge, Query
 
-class KnowledgeAwareAgent(Agent):
+class KnowledgeAgent(Agent):
     def __init__(self, name: str, role: Role):
         super().__init__(name=name, role=role)
-        self.knowledge = KnowledgeGraph()
+        self.kg = KnowledgeGraph()
 
-    async def _process_task(self, task: Dict[str, Any]) -> Any:
-        # Add task to knowledge graph
+    async def add_knowledge(self, subject: str, predicate: str, object: str):
+        # Create nodes
+        subject_node = Node(id=subject, type="entity")
+        object_node = Node(id=object, type="entity")
+        
+        # Add nodes to graph
+        self.kg.add_node(subject_node)
+        self.kg.add_node(object_node)
+        
+        # Create relationship
+        edge = Edge(
+            source=subject,
+            target=object,
+            type=predicate
+        )
+        self.kg.add_edge(edge)
+
+    async def query_knowledge(self, query: Query) -> List[Dict[str, Any]]:
+        return self.kg.execute_query(query)
+
+    async def learn_from_task(self, task: Dict[str, Any], result: Any):
+        # Extract knowledge from task execution
         task_node = Node(
             id=f"task_{task['id']}",
-            type="Task",
+            type="task",
             properties=task
         )
-        self.knowledge.add_node(task_node)
-
-        # Find related knowledge
-        related = self.knowledge.query(Query()
-            .match(type="Task")
-            .where(lambda x: x.properties["type"] == task["type"])
-            .limit(5)
-        )
-
-        # Process task using related knowledge
-        result = await self._execute_with_knowledge(task, related)
-
-        # Store result in knowledge graph
+        
         result_node = Node(
             id=f"result_{task['id']}",
-            type="Result",
-            properties=result
+            type="result",
+            properties={"output": result}
         )
-        self.knowledge.add_node(result_node)
-
+        
+        self.kg.add_node(task_node)
+        self.kg.add_node(result_node)
+        
         # Link task to result
-        self.knowledge.add_edge(Edge(
-            source=task_node.id,
-            target=result_node.id,
+        self.kg.add_edge(Edge(
+            source=f"task_{task['id']}",
+            target=f"result_{task['id']}",
             type="produced"
         ))
-
-        return result
-
-    async def _execute_with_knowledge(self, task: Dict[str, Any], 
-                                    related: list) -> Any:
-        # Use related knowledge to enhance task execution
-        enhanced_task = self._enhance_task(task, related)
-        return await self._execute_task(enhanced_task)
-
-    def _enhance_task(self, task: Dict[str, Any], 
-                     related: list) -> Dict[str, Any]:
-        # Enhance task with related knowledge
-        enhanced = task.copy()
-        
-        # Add insights from related tasks
-        insights = []
-        for node in related:
-            if node.properties.get("success", False):
-                insights.append({
-                    "source": node.id,
-                    "strategy": node.properties.get("strategy"),
-                    "outcome": node.properties.get("outcome")
-                })
-        
-        enhanced["insights"] = insights
-        return enhanced
 ```
 
-## Exercise: Build a Learning Agent
+## 4. Learning Capabilities
 
-Create an agent that:
-1. Uses all three memory types
-2. Maintains state across tasks
-3. Builds a knowledge graph of experiences
-4. Improves performance based on past experiences
+### Implementing Experience-Based Learning
+```python
+from graphfusionai import LearningModule
+import numpy as np
 
-## Solution
-Check the [exercise solution](exercise_solution.py) for a complete implementation.
+class AdaptiveAgent(Agent):
+    def __init__(self, name: str, role: Role):
+        super().__init__(name=name, role=role)
+        self.learning_module = LearningModule()
+        self.experience = []
+
+    async def learn_from_experience(self, task: Dict[str, Any], result: Any, feedback: float):
+        experience = {
+            "task": task,
+            "result": result,
+            "feedback": feedback,
+            "timestamp": datetime.now()
+        }
+        self.experience.append(experience)
+        await self.learning_module.update(experience)
+
+    async def get_task_recommendation(self, task: Dict[str, Any]) -> Dict[str, float]:
+        similar_experiences = self._find_similar_experiences(task)
+        if not similar_experiences:
+            return {"confidence": 0.0, "recommendation": None}
+
+        # Calculate weighted recommendation based on similar experiences
+        weights = [exp["feedback"] for exp in similar_experiences]
+        total_weight = sum(weights)
+        
+        if total_weight == 0:
+            return {"confidence": 0.0, "recommendation": None}
+
+        confidence = total_weight / len(similar_experiences)
+        return {
+            "confidence": confidence,
+            "recommendation": similar_experiences[np.argmax(weights)]["result"]
+        }
+
+    def _find_similar_experiences(self, task: Dict[str, Any]) -> List[Dict[str, Any]]:
+        # Implement similarity matching logic
+        return [exp for exp in self.experience if self._calculate_similarity(exp["task"], task) > 0.8]
+
+    def _calculate_similarity(self, task1: Dict[str, Any], task2: Dict[str, Any]) -> float:
+        # Implement task similarity calculation
+        # Return similarity score between 0 and 1
+        pass
+```
+
+## Exercise: Building a Smart Assistant
+
+Create an intelligent assistant that:
+1. Maintains conversation history in short-term memory
+2. Stores user preferences in long-term memory
+3. Builds a knowledge graph of user interactions
+4. Learns from user feedback to improve responses
+5. Uses persistent state to maintain context across sessions
 
 ## Next Steps
-- Review the [API Reference](../../api_reference.md)
-- Explore the [example notebooks](../../examples/)
-- Move on to [Module 4](../module4/README.md) to learn about multi-agent systems
+- Review the [exercise solution](exercise_solution.py)
+- Explore the [API Reference](../../api_reference.md)
+- Continue to [Module 4](../module4/README.md) for multi-agent systems
