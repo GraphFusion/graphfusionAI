@@ -1,4 +1,4 @@
-![graph-fusion-logo](https://github.com/user-attachments/assets/de5a4a09-a7e4-4b21-b3ec-01d5a3097ecd)
+![graph-fusion-logo](https://github.com/user-attachments/assets/de5a4a09-a7e4-4b21-b3ec-01d5a3097ecd) 
  
 </p>
 <h1 align="center" weight='300'>GraphFusionAI: The Graph-Based AI Agent Framework</h1>
