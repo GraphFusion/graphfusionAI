@@ -11,7 +11,7 @@ class Task(BaseModel):
     type: str
     priority: int = 1
     data: Dict[str, Any]
-    assigned_to: Optional[str] = None
+    assigned_to: Optional[str] = None 
     status: str = "pending"
     created_at: datetime = datetime.now()
     timeout: Optional[float] = None  # Timeout in seconds
