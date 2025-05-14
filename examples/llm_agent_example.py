@@ -7,7 +7,7 @@ import os
 from graphfusionai import Agent, Role
 from graphfusionai.llm import OpenAIProvider, PromptTemplate
 
-@Agent.create("Researcher",
+@Agent.create("Researcher", 
     role=Role(
         name="researcher",
         capabilities=["research", "summarize"],
