@@ -1,4 +1,4 @@
-"""Example demonstrating custom team implementation"""
+"""Example demonstrating custom team implementation""" 
 
 import asyncio
 from typing import Dict, Any
