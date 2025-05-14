@@ -1,11 +1,11 @@
-"""Team management system for agent collaboration"""
+"""Team management system for agent collaboration, still a simple implementation for now..."""
 
 from typing import Dict, Any, Optional, List
 from .agent import Agent, Role
 from .knowledge_graph import KnowledgeGraph
 from .memory import Memory
 
-class Team:
+class Team: 
     """Base class for managing agent teams"""
     def __init__(self, name: str, leader: Optional[Agent] = None):
         self.name = name
