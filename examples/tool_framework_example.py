@@ -1,5 +1,5 @@
 """
-Example demonstrating the Tool and Skills Framework functionality
+Example demonstrating the Tool and Skills Framework functionality 
 """
 
 import asyncio
