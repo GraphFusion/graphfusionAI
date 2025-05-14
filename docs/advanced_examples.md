@@ -2,7 +2,7 @@
 
 ## 1. Collaborative Research System
 
-This example demonstrates multiple agents working together to research, analyze, and summarize information.
+This example demonstrates multiple agents working together to research, analyze, and summarize information. 
 
 ```python
 import asyncio
