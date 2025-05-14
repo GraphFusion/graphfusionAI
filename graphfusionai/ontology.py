@@ -13,7 +13,7 @@ class Relationship(BaseModel):
     source: str
     target: str
     type: str
-    properties: Dict[str, Any] = {}
+    properties: Dict[str, Any] = {} 
 
 class Ontology:
     """Manages domain ontology"""
