@@ -1,3 +1,4 @@
+#Note this is a simplified implementation of the KG component, it uses a basic networkx component
 import networkx as nx
 from typing import Dict, Any, List, Optional, Tuple, Set
 from pydantic import BaseModel
