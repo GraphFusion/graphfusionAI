@@ -17,8 +17,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Set API key once for all agents
-API_KEY = "e098f023457f4038b10d83f5d9411d5d"
-BASE_URL = "https://api.aimlapi.com/v1"
+API_KEY = "YOUR_API_KEY"
+BASE_URL = "string"
 
 class BaseLLMAgent(Agent):
     """Base agent ensuring memory and knowledge graph exist for all agents."""
