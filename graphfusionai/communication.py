@@ -10,7 +10,7 @@ class Message(BaseModel):
     sender: str
     receiver: str
     content: Dict[str, Any]
-    type: str
+    type: str 
     timestamp: datetime = datetime.now()
 
 class CommunicationBus:
