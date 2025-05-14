@@ -22,7 +22,7 @@ class TravelAgent(Agent):
         
         # Set up AIML provider
         provider = AIMLProvider(
-            api_key="e098f023457f4038b10d83f5d9411d5d",
+            api_key="API_KEY",
             base_url="https://api.aimlapi.com/v1"
         )
         self.set_llm_provider(provider)
