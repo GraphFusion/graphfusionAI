@@ -8,7 +8,7 @@ The GraphFusionAI Framework is a Python library for building multi-agent systems
 - Knowledge Graph integration for enhanced data understanding
 - Task orchestration and workflow management
 - Memory management for agents
-- Ontology-based knowledge representation
+- Ontology-based knowledge representation 
 
 ## Installation
 ```bash
