@@ -12,7 +12,6 @@ Thank you for your interest in contributing to the GraphFusion Core project! Thi
 6. [Testing](#testing)
 7. [Documentation](#Documentation)
 
----
 
 ### 1. Getting Started
 
@@ -77,7 +76,5 @@ We follow the [Contributor Covenant Code of Conduct](https://www.contributor-cov
 - **Docstrings**: Add docstrings to all public functions and classes using Google style.
 - **README and Guides**: Update the `README.md` or relevant `docs/` guides if you are adding significant functionality.
 - **Changelog**: Document any user-facing changes in `CHANGELOG.md`.
-
----
 
 Thank you for contributing to GraphFusion! We’re excited to have you involved and look forward to working together to build a powerful platform.
