@@ -1,5 +1,5 @@
 """
-Base classes for tool framework
+Base classes for tool framework however much of this will change since we have an entire tools framework library, this will be further modified to just serve as connectors or as helper functions to the tool class library...
 """
 
 from typing import Any, Callable, Dict, List, Optional, Union
