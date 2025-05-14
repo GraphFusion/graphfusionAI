@@ -1,3 +1,5 @@
+
+#Simple agent workflow example demonstration
 import asyncio
 from graphfusionai import (
     Agent, Role, KnowledgeGraph, TaskOrchestrator,
@@ -11,7 +13,7 @@ from rich.console import Console
 console = Console()
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO) 
 
 # Define roles
 researcher_role = Role(
