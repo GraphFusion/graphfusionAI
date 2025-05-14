@@ -15,7 +15,7 @@ class DataProcessorAgent(Agent):
         self._setup_tools()
 
     def _setup_tools(self):
-        @self.tool(description="Process raw data into structured format")
+        @self.tool(description="Process raw data into structured format") 
         async def process_data(data: dict) -> dict:
             """Process incoming data"""
             return {
