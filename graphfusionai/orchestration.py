@@ -1,5 +1,5 @@
 """
-Advanced orchestration capabilities for dynamic agent creation and management
+Advanced orchestration capabilities for dynamic agent creation and management but still a simplified version **Now**
 """
 
 from typing import Dict, List, Any, Optional, Type, Union
